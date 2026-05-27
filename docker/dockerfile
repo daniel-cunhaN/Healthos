@@ -1,0 +1,12 @@
+FROM python:3.10.20-slim
+
+WORKDIR /pastadocker
+
+COPY requisitos.txt .
+
+RUN apt-get update && apt-get install -y libpq-dev gcc
+RUN pip install --no-cache-dir -r requisitos.txt
+
+COPY . .
+
+EXPOSE 8501

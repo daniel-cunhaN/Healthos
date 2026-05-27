@@ -1,0 +1,52 @@
+services:
+  # 1. O Banco de Dados (PostgreSQL)
+  db:
+    image: postgres:15
+    container_name: healthos_db_github
+    environment:
+      POSTGRES_USER: ${user}
+      POSTGRES_PASSWORD: ${password}
+      POSTGRES_DB: ${database}
+    ports:
+      - "5435:5432"
+    volumes:
+      - healthos_github_data:/var/lib/postgresql/data
+    init: true
+  # 2. O Aplicativo Web (Streamlit)
+  app:
+    build: 
+      context: ..
+      dockerfile: docker/dockerfile
+    container_name: healthos_app_github
+    ports:
+      - "8502:8501"
+    volumes:
+      - ..:/pastadocker
+    depends_on:
+      - db
+    environment:
+      - host=db
+      - port=5432
+      - user=${user}
+      - password=${password}
+      - database=${database}
+    command: sh -c "python limpeza_dados/migracaoDados.py && streamlit run app.py"
+    init: true
+  # 3. Metabase para BI
+  metabase:
+    image: metabase/metabase:latest
+    container_name: healthos_bi_github
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${database}
+      MB_DB_PORT: 5432
+      MB_DB_USER: ${user}
+      MB_DB_PASS: ${password}
+      MB_DB_HOST: db
+
+volumes:
+  healthos_github_data:
