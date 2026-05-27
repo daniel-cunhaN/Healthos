@@ -1,4 +1,4 @@
-# 📚 Healthos
+# 💊 Healthos
 
 **Healthos**, uma aplicação local voltada para o monitoramento diário de dados de saúde, como sintomas, bem-estar, alimentação etc.
 Nesse aplicativo, foram postos em prática o conceito ETL, com a limpeza e transformação dos dados em python (pandas), bem como a
